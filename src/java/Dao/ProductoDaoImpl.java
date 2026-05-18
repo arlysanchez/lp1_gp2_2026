@@ -15,27 +15,25 @@ import java.util.List;
  *
  * @author LAB 2
  */
-public class ProductoDaoImpl implements IProducto{
-   private Connection cn;
+public class ProductoDaoImpl implements IProducto {
+
+    private Connection cn;
+
     @Override
     public List<Productos> lista() {
-        List<Productos> lista =null;
+        List<Productos> lista = null;
         Productos pr;
         PreparedStatement st;
         ResultSet rs;
-        String query=null;
+        String query = null;
         try {
-            query = " SELECT id_producto,nombre,descripcion,"
-                    + " precio,stock FROM productos ";
-            
+            query = " SELECT id_producto,nombre,descripcion,precio,stock FROM productos;";
             lista = new ArrayList<>();
-            if (cn==null || cn.isClosed()) {
-                System.out.println("la conexion es nula o esta cerradda");
-            }
-            cn= ConexionSingleton.getConnection();
+
+            cn = ConexionSingleton.getConnection();
             st = cn.prepareStatement(query);
-            rs=st.executeQuery();
-            while (rs.next()) {                
+            rs = st.executeQuery();
+            while (rs.next()) {
                 pr = new Productos();
                 pr.setId_producto(rs.getInt("id_producto"));
                 pr.setNombre(rs.getString("nombre"));
@@ -43,21 +41,21 @@ public class ProductoDaoImpl implements IProducto{
                 pr.setPrecio(rs.getDouble("precio"));
                 pr.setStock(rs.getInt("stock"));
                 lista.add(pr);
-            }            
-             
-        }catch (Exception e) {
-            System.out.println("Error al listar:"+e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al listar:" + e.getMessage());
             try {
                 cn.rollback();
             } catch (Exception ex) {
             }
             System.out.println("No se pudo listar el producto");
         } finally {
-            if (cn!=null) {
+            if (cn != null) {
                 try {
                 } catch (Exception ex) {
                 }
-                
+
             }
         }
         return lista;
@@ -65,7 +63,41 @@ public class ProductoDaoImpl implements IProducto{
 
     @Override
     public boolean insert(Productos p) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean flag = false;
+        PreparedStatement st;
+        String query;
+        try {
+            query = "INSERT INTO productos "
+                    + "( nombre,descripcion,precio,stock,imagen)"
+                    + " VALUES(?,?,?,?,?)";
+            cn = ConexionSingleton.getConnection();
+            st = cn.prepareStatement(query);
+            st.setString(1, p.getNombre());
+            st.setString(2, p.getDescripcion());
+            st.setDouble(3, p.getPrecio());
+            st.setInt(4, p.getStock());
+            st.setString(5, p.getImagen());
+            st.executeUpdate();
+            flag = true;
+
+        } catch (Exception e) {
+            System.out.println("Error al insertar:" + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            System.out.println("No se pudo insertar el producto");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception ex) {
+                }
+
+            }
+        }
+
+        return flag;
+
     }
 
     @Override
@@ -87,5 +119,5 @@ public class ProductoDaoImpl implements IProducto{
     public boolean updateStock(int id, int stock) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
 }
