@@ -86,6 +86,7 @@ public class ProductoDaoImpl implements IProducto {
                 cn.rollback();
             } catch (Exception ex) {
             }
+            flag = false;
             System.out.println("No se pudo insertar el producto");
         } finally {
             if (cn != null) {
@@ -102,22 +103,150 @@ public class ProductoDaoImpl implements IProducto {
 
     @Override
     public boolean update(Productos p) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean flag = false;
+        PreparedStatement st;
+        String query = null;
+        try {
+            query = " UPDATE productos SET nombre=?, "
+                    + " descripcion=?, precio=?,stock=?, imagen=?"
+                    + " WHERE id_producto=?";
+            cn = ConexionSingleton.getConnection();
+            st = cn.prepareStatement(query);
+            st.setString(1, p.getNombre());
+            st.setString(2, p.getDescripcion());
+            st.setDouble(3, p.getPrecio());
+            st.setInt(4, p.getStock());
+            st.setString(5, p.getImagen());
+            st.setInt(6, p.getId_producto());
+            st.executeUpdate();
+            flag = true;
+
+        } catch (Exception e) {
+            System.out.println("Error al actualizar:" + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            flag = false;
+            System.out.println("No se pudo actualizar el producto");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception ex) {
+                }
+
+            }
+        }
+
+        return flag;
     }
 
     @Override
-    public Productos SerachById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Productos SearchById(int id) {
+        Productos pr = null;
+        PreparedStatement st;
+        ResultSet rs;
+        String query = null;
+        try {
+            query = " SELECT * FROM productos WHERE id_producto=?;";
+            cn = ConexionSingleton.getConnection();
+            st = cn.prepareStatement(query);
+            st.setInt(1, id);
+            rs = st.executeQuery();
+            while (rs.next()) {
+                pr = new Productos();
+                pr.setId_producto(rs.getInt("id_producto"));
+                pr.setNombre(rs.getString("nombre"));
+                pr.setDescripcion(rs.getString("descripcion"));
+                pr.setPrecio(rs.getDouble("precio"));
+                pr.setStock(rs.getInt("stock"));
+                pr.setImagen(rs.getString("imagen"));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al buscar por ID:" + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            System.out.println("No se pudo buscar por ID");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception ex) {
+                }
+
+            }
+        }
+        return pr;
+
     }
 
     @Override
     public boolean delete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean flag = false;
+        PreparedStatement st;
+        String query = null;
+        try {
+            query = " DELETE FROM productos WHERE id_producto=?";
+            cn = ConexionSingleton.getConnection();
+            st = cn.prepareStatement(query);
+            st.setInt(1, id);
+            st.executeUpdate();
+            flag = true;
+
+        } catch (Exception e) {
+            System.out.println("Error al eliminar:" + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            flag = false;
+            System.out.println("No se pudo eliminar el producto");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception ex) {
+                }
+
+            }
+        }
+
+        return flag;
     }
 
     @Override
     public boolean updateStock(int id, int stock) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean flag = false;
+        PreparedStatement st;
+        String query = null;
+        try {
+            query = " UPDATE productos SET stock=? WHERE id_producto=?";
+            cn = ConexionSingleton.getConnection();
+            st = cn.prepareStatement(query);
+            st.setInt(1, stock);
+            st.setInt(2, id);
+            st.executeUpdate();
+            flag = true;
+
+        } catch (Exception e) {
+            System.out.println("Error al actualizar:" + e.getMessage());
+            try {
+                cn.rollback();
+            } catch (Exception ex) {
+            }
+            flag = false;
+            System.out.println("No se pudo actualizar el producto");
+        } finally {
+            if (cn != null) {
+                try {
+                } catch (Exception ex) {
+                }
+
+            }
+        }
+
+        return flag;
     }
 
 }
