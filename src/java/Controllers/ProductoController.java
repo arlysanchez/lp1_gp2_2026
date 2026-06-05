@@ -160,11 +160,17 @@ public class ProductoController extends HttpServlet {
 
     private void eliminarProductos(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+       int id = Integer.parseInt(request.getParameter("id"));
+        boolean res = pDao.delete(id);
+        response.getWriter().print(gson.toJson(res));
 
     }
 
     private void buscarProductos(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+         int id = Integer.parseInt(request.getParameter("id"));
+        Productos p = pDao.SearchById(id);
+        response.getWriter().print(gson.toJson(p));
 
     }
 
