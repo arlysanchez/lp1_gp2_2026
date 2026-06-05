@@ -147,7 +147,7 @@ public class AppController extends HttpServlet {
                     Pedidos pedido = new Pedidos();
                     pedido.setPersona(user.getPersona());
                     pedido.setTotal(totalPagar);
-                    pedido.setEstadoPedido(EstadoPedido.PROCESADO);
+                    pedido.setEstadoPedido(EstadoPedido.ENVIADO);
                     pedido.setDetallePedido(listCarrito);
                     
                     int idGenerado = IDao.generarPedido(pedido);
